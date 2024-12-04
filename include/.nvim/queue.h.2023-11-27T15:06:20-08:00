@@ -1,0 +1,16 @@
+#ifndef QUEUE_H
+#define QUEUE_H
+
+#define BUF_SIZE 64
+typedef struct {
+  char str[64];
+  int size;
+} queue_item_t;
+
+queue_item_t msg_buf[25];
+static int index;
+
+int enqueue(char *str, int len);
+int dequeue(char *str);
+
+#endif

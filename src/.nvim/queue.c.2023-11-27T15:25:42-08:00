@@ -1,0 +1,19 @@
+#include "../include/queue.h"
+#include <pthread.h>
+#include <stdio.h>
+#include <string.h>
+
+queue_item_t msg_buf[MAX_MSGS];
+static int head;
+static int tail;
+
+void enqueue(char *to_copy) {
+  strncpy(msg_buf[tail].str, to_copy, BUF_SIZE);
+  msg_buf[tail].size = strlen(to_copy);
+  tail += (tail + 1) % MAX_MSGS;
+}
+
+void dequeue(char *buf) {
+  strncpy(buf, msg_buf[head].str, BUF_SIZE);
+  head = (head + 1) % MAX_MSGS;
+}

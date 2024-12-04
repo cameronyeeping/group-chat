@@ -1,0 +1,6 @@
+#include "../include/queue.h"
+#include <pthread.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+pthread_mutex_t mtx = PTHREAD_MUTEX_INITIALIZER;

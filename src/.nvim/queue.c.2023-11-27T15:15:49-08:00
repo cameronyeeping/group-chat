@@ -1,0 +1,19 @@
+#include "../include/queue.h"
+#include <stdio.h>
+#include <string.h>
+#include <pthread.h>
+
+int enqueue(char *to_copy) {
+  if(strncpy(msg_buf[tail].str, to_copy, BUF_SIZE) {
+
+  }
+}
+
+int dequeue(char *buf) {
+  if(strncpy(buf, msg_buf[index].str, BUF_SIZE) != NULL) {
+    head = (head + 1) % MAX_MSGS;
+    return 0;
+  }
+  else
+    return -1;
+}

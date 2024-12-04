@@ -1,0 +1,23 @@
+#include "../include/queue.h"
+#include <stdio.h>
+#include <unistd.h>
+int main() {
+  char *s1 = NULL;
+
+  printf("Accepting input: ");
+  read(STDIN_FILENO, s1, 0);
+  enqueue(s1);
+
+  printf("Accepting input: ");
+  read(STDIN_FILENO, s1, 0);
+  enqueue(s1);
+
+
+  char buf[100];
+  dequeue(buf);
+  printf("%s\n", buf);
+  dequeue(buf);
+  printf("%s\n", buf);
+
+  return 0;
+}

@@ -1,0 +1,12 @@
+#include "../include/queue.h"
+#include <stdio.h>
+
+int enqueue(char* str, int len) {
+
+}
+
+int dequeue(char* str) {
+  char toReturn[BUF_SIZE];
+  strncpy(toReturn, str, BUF_SIZE);
+  index++;
+}

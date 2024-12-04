@@ -1,0 +1,15 @@
+#ifndef QUEUE_H
+#define QUEUE_H
+
+#define BUFFER_SIZE 100
+#define MAX_MSGS 25
+
+typedef struct {
+  int size;
+  char* str;
+}item;
+
+void enqueue(char *);
+int dequeue(char *);
+
+#endif

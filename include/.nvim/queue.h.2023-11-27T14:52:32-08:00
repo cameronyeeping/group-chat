@@ -1,0 +1,16 @@
+#ifndef QUEUE_H
+#define QUEUE_H
+#define BUF_SIZE 64
+typedef struct {
+  char str[BUF_SIZE];
+  int size;
+} qItem_t;
+
+typedef struct {
+  
+} queue;
+
+int add(char* msg);
+qItem_t pop();
+
+#endif

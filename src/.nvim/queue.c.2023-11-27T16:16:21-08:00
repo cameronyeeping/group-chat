@@ -1,0 +1,52 @@
+#include "../include/queue.h"
+#include <pthread.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+pthread_mutex_t mtx = PTHREAD_MUTEX_INITIALIZER;
+
+static queue_item_t msg_buf[MAX_MSGS];
+
+static int head;
+static int tail;
+static int size;
+
+void enqueue(char *to_copy) {
+  printf("enqueue\n");
+  if (size < MAX_MSGS) {
+    int s = pthread_mutex_lock(&mtx);
+    if (s != 0) {
+      perror("pthred_mutex_lock");
+      exit(1);
+    }
+    strncpy(msg_buf[tail].str, to_copy, BUFFER_SIZE);
+    msg_buf[tail].size = strlen(to_copy);
+    tail += (tail + 1) % MAX_MSGS;
+    s = pthread_mutex_unlock(&mtx);
+    if (s != 0) {
+      perror("pthread_mutex_unlock");
+      exit(1);
+    }
+  }
+}
+
+int dequeue(char *buf) {
+  printf("dequeue\n");
+  if (size > 0) {
+    int s = pthread_mutex_lock(&mtx);
+    if (s != 0) {
+      perror("pthred_mutex_lock");
+      exit(1);
+    }
+    strncpy(buf, msg_buf[head].str, BUFFER_SIZE);
+    head = (head + 1) % MAX_MSGS;
+    size--;
+    s = pthread_mutex_unlock(&mtx);
+    if (s != 0) {
+      perror("pthread_mutex_unlock");
+      exit(1);
+    }
+    return 0;
+  }
+  return 1;
+}

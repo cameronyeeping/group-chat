@@ -1,0 +1,7 @@
+#include "../include/queue.h"
+#include <stdio.h>
+#include <string.h>
+
+static int index;
+
+int add();

@@ -1,0 +1,18 @@
+#ifndef QUEUE_H
+#define QUEUE_H
+
+#define BUF_SIZE 64
+#define MAX_MSGS 25
+typedef struct {
+  char str[64];
+  int size;
+} queue_item_t;
+
+queue_item_t msg_buf[MAX_MSGS];
+static int head;
+static int tail;
+
+int enqueue(char *str);
+int dequeue(char *str);
+
+#endif

@@ -1,0 +1,90 @@
+#define _DEFAULT_SOURCE
+#include "../include/server.h"
+#include <arpa/inet.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/socket.h>
+#include <unistd.h>
+
+// my ip?
+#define ADDR "192.168.224.128"
+
+void convert(uint8_t *buf, char *str, ssize_t size) {
+  if (size % 2 == 0)
+    size = size / 2 - 1;
+  else
+    size = size / 2;
+  for (int i = 0; i < size; i++)
+    sprintf(str + (i * 2), "%02X", buf[i]);
+}
+
+void processMsg(char buf[4][100], char *server_msg, ssize_t output_len) {
+  // output, recbuf, strlen(recbuf)
+  buf[0][0] = server_msg[0];
+  if (server_msg[0] == 1)
+    return;
+
+  int i = 0;
+  char *token = strtok(server_msg, " ");
+  printf("processmsg\n");
+  printf("message received: %s\n", server_msg);
+  while (token != NULL) {
+    strcpy(buf[i], token);
+    printf("%s\n", buf[i]);
+    i++;
+    token = strtok(NULL, " ");
+  }
+  unsigned long ip = ntohl(atoi(buf[1]));
+  printf("ip address from msg: %lu\n", ip);
+  uint8_t port = ntohl(atoi(buf[2]));
+
+  struct in_addr ip_addr;
+
+  ip_addr.s_addr = ip;
+  strncpy(buf[1], inet_ntoa(ip_addr), strlen(inet_ntoa(ip_addr)));
+  sprintf(buf[2], "%hu", port);
+  printf("end of processmsg\n");
+}
+
+int main() {
+  struct sockaddr_in addr;
+  int sfd;
+  ssize_t num_read;
+  uint8_t buf[10];
+
+  char str[10 * 2 + 1];
+  char output[4][BUF_SIZE];
+  char recbuf[BUF_SIZE * 2];
+  char tempBuf[22];
+  sfd = socket(AF_INET, SOCK_STREAM, 0);
+  if (sfd == -1)
+    handle_error("socket");
+  memset(&addr, 0, sizeof(struct sockaddr_in));
+  addr.sin_port = htons(PORT);
+  addr.sin_family = AF_INET;
+
+  if (inet_pton(AF_INET, ADDR, &addr.sin_addr) <= 0)
+    handle_error("inet_pton");
+
+  if (connect(sfd, (struct sockaddr *)&addr, sizeof(struct sockaddr_in)) == -1)
+    handle_error("connect");
+  while (1) {
+    int s = recv(sfd, recbuf, BUF_SIZE * 2, MSG_PEEK | MSG_DONTWAIT);
+    if (s != -1)
+      recv(sfd, recbuf, BUF_SIZE * 2, MSG_DONTWAIT);
+    processMsg(output, recbuf, strlen(recbuf));
+    getentropy(buf, 10);
+    convert(buf, str, 21);
+    sprintf(tempBuf, "0%s", str);
+    send(sfd, tempBuf, strlen(tempBuf), MSG_DONTWAIT);
+    printf("message sent: %s\n", tempBuf);
+    printf("%-20s%-10s%s\n", output[1], output[2], output[3]);
+    sleep(1);
+  }
+
+  if (num_read == -1)
+    handle_error("read");
+
+  exit(EXIT_SUCCESS);
+}

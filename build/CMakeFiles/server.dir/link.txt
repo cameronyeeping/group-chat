@@ -1,0 +1,1 @@
+/usr/bin/clang CMakeFiles/server.dir/src/inet_server.c.o CMakeFiles/server.dir/src/queue.c.o -o server 
